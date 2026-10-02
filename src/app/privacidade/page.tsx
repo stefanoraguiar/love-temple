@@ -73,28 +73,45 @@ export default function Privacidade() {
           <p>
             O tratamento assenta no teu consentimento, artigo 6.º, n.º 1, alínea
             a) do RGPD. A caixa não vem preenchida. Se não consentires, a
-            inscrição não é guardada.
+            inscrição não é enviada.
           </p>
           <p className="mt-3">
             Podes retirar o consentimento a qualquer momento. Quando o fizeres,
-            apagamos a inscrição e o lugar deixa de estar reservado.
+            os organizadores apagam a inscrição e o lugar deixa de estar
+            reservado.
           </p>
         </Secao>
 
         <Secao titulo="Quanto tempo ficam">
           <p>
-            Guardamos a inscrição até 30 dias depois do encontro, ou seja, até{" "}
-            {evento.retencao}. Depois apagamos o ficheiro com estes dados, a
-            menos que peças o apagamento antes.
+            Os organizadores conservam o email da inscrição até 30 dias depois
+            do encontro, ou seja, até {evento.retencao}. Depois apagam essa
+            mensagem e qualquer cópia destes dados, a menos que peças o
+            apagamento antes.
           </p>
         </Secao>
 
         <Secao titulo="Com quem são partilhados">
           <p>
-            Os dados do formulário ficam com os organizadores, no servidor onde
-            este site corre. Não os vendemos nem os passamos a ferramentas de
+            A página está no GitHub Pages e não recebe o formulário. O browser
+            envia o nome, o email e o telemóvel ao{" "}
+            <a
+              className="underline underline-offset-4"
+              href="https://formsubmit.co"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              FormSubmit
+            </a>
+            , que os entrega por email à caixa dos organizadores. O endereço
+            dessa caixa fica visível no código da página, porque o browser
+            precisa de saber para onde enviar.
+          </p>
+          <p className="mt-3">
+            Não vendemos estes dados nem os passamos a ferramentas de
             marketing. A Stripe só recebe o que tu próprio introduzires na
-            página de pagamento, se decidires avançar.
+            página de pagamento, se decidires avançar. Esse passo é separado
+            desta inscrição.
           </p>
         </Secao>
 

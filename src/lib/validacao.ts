@@ -54,7 +54,7 @@ export function validarInscricao(dados: DadosInscricao): ErrosInscricao {
   }
   if (!dados.consentimento) {
     erros.consentimento =
-      "Precisamos do teu consentimento para guardar estes dados.";
+      "Precisamos do teu consentimento para enviar estes dados aos organizadores.";
   }
 
   return erros;

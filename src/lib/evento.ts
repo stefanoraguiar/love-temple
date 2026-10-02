@@ -1,5 +1,5 @@
 /**
- * Dados do encontro. O link Stripe e o email de privacidade
+ * Dados do encontro. O link Stripe e os emails
  * vêm das variáveis de ambiente — vê .env.example.
  */
 
@@ -33,10 +33,22 @@ export function linkPagamento(): string | null {
   return link;
 }
 
-export function emailPrivacidade(): string | null {
-  const email = process.env.CONTACT_EMAIL?.trim() ?? "";
+function emailValido(valor: string | undefined): string | null {
+  const email = valor?.trim() ?? "";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return null;
   return email;
+}
+
+/** Caixa que recebe o formulário. Fica no JavaScript da página, porque o browser envia o email. */
+export function destinoInscricao(): string | null {
+  return (
+    emailValido(process.env.INSCRICAO_EMAIL) ??
+    emailValido(process.env.NEXT_PUBLIC_INSCRICAO_EMAIL)
+  );
+}
+
+export function emailPrivacidade(): string | null {
+  return emailValido(process.env.CONTACT_EMAIL) ?? destinoInscricao();
 }
 
 export const evento = {
@@ -51,4 +63,6 @@ export const evento = {
   lugares: 15,
   valor: "Valor simbólico",
   retencao: "12 de novembro de 2026",
+  // Fecha a lista à mão, quando os 15 lugares estiverem confirmados.
+  inscricoesAbertas: true,
 } as const;

@@ -2,6 +2,8 @@
 
 Página de inscrição do primeiro Love Temple: 13 de outubro de 2026, das 19h às 23h, quinze lugares, só para a comunidade. O texto está em português de Portugal. O pagamento é um link Stripe. O site não usa cookies.
 
+A página é estática e publica-se no GitHub Pages, no teu domínio. O formulário não fica guardado no GitHub: o browser envia-o por email aos organizadores, através do [FormSubmit](https://formsubmit.co).
+
 ## Correr em local
 
 ```bash
@@ -12,31 +14,71 @@ npm run dev
 
 Abre [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
-## Pagamento
+`npm run build` escreve o site em `out/`.
 
-Em `.env.local`:
+## O que configurar antes de abrir inscrições
+
+Em `.env.local`, e nos segredos do repositório GitHub com os mesmos nomes:
 
 ```bash
+INSCRICAO_EMAIL=inscricoes@o-teu-dominio.pt
 STRIPE_PAYMENT_LINK=https://buy.stripe.com/o-teu-link
 CONTACT_EMAIL=privacidade@o-teu-dominio.pt
 ```
 
-O link tem de ser `https` e estar num domínio `stripe.com` (os Payment Links vivem em `buy.stripe.com`). Enquanto a variável estiver vazia, a inscrição é guardada na mesma e a página explica que o pagamento ainda não abriu.
+- `INSCRICAO_EMAIL` é a caixa que recebe cada inscrição. Fica visível no código da página, porque o browser precisa do endereço para enviar o formulário. Na primeira vez, o FormSubmit manda um email de ativação: sem esse clique, as inscrições não chegam.
+- `STRIPE_PAYMENT_LINK` tem de ser `https` e estar num domínio `stripe.com` (os Payment Links vivem em `buy.stripe.com`). Enquanto estiver vazio, a inscrição segue na mesma e a página diz que o pagamento ainda não abriu.
+- `CONTACT_EMAIL` aparece em `/privacidade` para pedidos de acesso, correção ou apagamento. Se ficar vazio, usa-se o `INSCRICAO_EMAIL`.
 
-`CONTACT_EMAIL` aparece na política de privacidade (`/privacidade`) como contacto para pedidos de acesso, correção ou apagamento.
+O nome legal dos organizadores está em `src/lib/evento.ts`, no campo `responsavel`. Substitui pela entidade real.
 
-## Inscrições
+Os quinze lugares não se contam sozinhos. Quando a lista fechar, muda `inscricoesAbertas` para `false` nesse ficheiro e publica outra vez.
 
-Cada inscrição fica em `data/inscricoes.json`, na máquina onde o servidor corre. O ficheiro tem nome, email e telemóvel. Não entra no git.
+## Publicar no GitHub Pages
 
-Este formato serve um servidor com disco persistente. Num alojamento em que o disco é apagado a cada deploy, as inscrições desaparecem — nesse caso é preciso outro sítio para as guardar.
+O site tem de estar num repositório GitHub teu. O fluxo está em `.github/workflows/pages.yml` e corre em cada push para `main`.
 
-Há quinze lugares. Quando o ficheiro chega a quinze, o formulário fecha. Um email não se inscreve duas vezes.
+1. No repositório: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Em **Settings → Secrets and variables → Actions**, cria os segredos `INSCRICAO_EMAIL`, `STRIPE_PAYMENT_LINK` e `CONTACT_EMAIL`.
+3. No mesmo sítio, em **Variables**, cria `CUSTOM_DOMAIN` com o domínio que já tens, sem `https://` e sem barra. Exemplos: `lovetemple.pt` ou `www.lovetemple.pt`. O workflow escreve esse valor no ficheiro `CNAME` de cada publicação. Sem esta variável, o Pages fica no endereço `*.github.io`.
+4. Faz push de `main`. O separador **Actions** mostra a publicação. No fim, **Settings → Pages** indica o endereço.
+
+O domínio não fica gravado no código. Cada publicação volta a escrever o `CNAME` a partir da variável, para o Pages não o perder.
+
+## Ligar o domínio
+
+No painel de DNS do domínio, aponta para o GitHub. `USERNAME` é o utilizador ou a organização dona do repositório.
+
+Domínio de raiz (`exemplo.pt`), quatro registos `A` no nome `@`:
+
+| Tipo | Nome | Valor |
+| --- | --- | --- |
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+
+E, se quiseres IPv6, quatro `AAAA` no mesmo nome:
+
+| Tipo | Nome | Valor |
+| --- | --- | --- |
+| AAAA | `@` | `2606:50c0:8000::153` |
+| AAAA | `@` | `2606:50c0:8001::153` |
+| AAAA | `@` | `2606:50c0:8002::153` |
+| AAAA | `@` | `2606:50c0:8003::153` |
+
+Subdomínio (`www` ou outro), um `CNAME`:
+
+| Tipo | Nome | Valor |
+| --- | --- | --- |
+| CNAME | `www` | `USERNAME.github.io` |
+
+Se o domínio de raiz e o `www` tiverem estes registos, o GitHub redireciona um para o outro conforme o valor de `CUSTOM_DOMAIN`. Remove outros `A`, `AAAA` ou `CNAME` no mesmo nome: costumam impedir o certificado.
+
+Depois de o DNS propagar, em **Settings → Pages** confirma o domínio e marca **Enforce HTTPS**. O certificado é emitido pelo GitHub e pode demorar até cerca de uma hora. Convém também verificar o domínio na conta GitHub, para mais ninguém o usar num Pages.
 
 ## Privacidade
 
 Não há cookies, analytics, sessão de login nem armazenamento no browser. O aviso no fundo da página fecha enquanto a visita continua; se a página for atualizada, volta a aparecer. A política está em `/privacidade`.
 
 As páginas trazem `noindex`: o link funciona para quem o receber, e não se destina a motores de busca.
-
-O nome legal dos organizadores está em `src/lib/evento.ts`, no campo `responsavel`. Convém substituir pela entidade real antes de abrir inscrições.

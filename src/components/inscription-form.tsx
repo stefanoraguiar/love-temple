@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { validarInscricao, type ErrosInscricao } from "@/lib/validacao";
+import { normalizar, validarInscricao, type ErrosInscricao } from "@/lib/validacao";
 
 type Estado = {
   nome: string;
@@ -28,12 +28,17 @@ const inicial: Estado = {
   empresa: "",
 };
 
-export function InscriptionForm({ restantes }: { restantes: number }) {
+export function InscriptionForm({
+  pagamentoUrl,
+  emailDestino,
+}: {
+  pagamentoUrl: string | null;
+  emailDestino: string | null;
+}) {
   const [estado, setEstado] = useState<Estado>(inicial);
   const [erros, setErros] = useState<ErrosInscricao>({});
   const [erroGeral, setErroGeral] = useState("");
   const [aEnviar, setAEnviar] = useState(false);
-  const [pagamentoUrl, setPagamentoUrl] = useState<string | null>(null);
   const [enviado, setEnviado] = useState(false);
 
   function atualizar<K extends keyof Estado>(campo: K, valor: Estado[K]) {
@@ -43,32 +48,58 @@ export function InscriptionForm({ restantes }: { restantes: number }) {
   async function submeter(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErroGeral("");
+
+    if (estado.empresa.trim()) {
+      setEnviado(true);
+      return;
+    }
+
     const encontrados = validarInscricao(estado);
     setErros(encontrados);
     if (Object.keys(encontrados).length > 0) return;
 
+    if (!emailDestino) {
+      setErroGeral(
+        "A caixa de correio dos organizadores ainda não está ligada. Até lá, a inscrição não sai desta página.",
+      );
+      return;
+    }
+
+    const dados = normalizar(estado);
     setAEnviar(true);
     try {
-      const resposta = await fetch("/api/inscricao", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "omit",
-        body: JSON.stringify(estado),
-      });
-      const corpo = (await resposta.json()) as {
-        ok?: boolean;
-        erro?: string;
-        erros?: ErrosInscricao;
-        pagamentoUrl?: string | null;
-      };
+      const resposta = await fetch(
+        `https://formsubmit.co/ajax/${encodeURIComponent(emailDestino)}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            nome: dados.nome,
+            email: dados.email,
+            telemovel: dados.telemovel,
+            comunidade: "sim",
+            maioridade: "sim",
+            _subject: `Inscrição Love Temple — ${dados.nome}`,
+            _template: "table",
+            _captcha: "false",
+            _replyto: dados.email,
+          }),
+        },
+      );
+      const corpo = (await resposta.json().catch(() => null)) as {
+        success?: string;
+      } | null;
 
-      if (!resposta.ok || !corpo.ok) {
-        if (corpo.erros) setErros(corpo.erros);
-        setErroGeral(corpo.erro || "Não foi possível enviar a inscrição.");
+      if (!resposta.ok || corpo?.success !== "true") {
+        setErroGeral(
+          "O envio não chegou à caixa dos organizadores. Se esta for a primeira inscrição, abre o email de ativação do FormSubmit e tenta outra vez.",
+        );
         return;
       }
 
-      setPagamentoUrl(corpo.pagamentoUrl ?? null);
       setEnviado(true);
     } catch {
       setErroGeral("Sem ligação. Verifica a rede e tenta outra vez.");
@@ -85,10 +116,11 @@ export function InscriptionForm({ restantes }: { restantes: number }) {
         </p>
         <h3 className="mt-3 font-display text-4xl italic">Guarda a data.</h3>
         <p className="mt-4 text-base leading-relaxed">
-          Ficou registada a inscrição de {estado.nome.trim()}, com o email{" "}
+          Ficou enviada a inscrição de {estado.nome.trim()}, com o email{" "}
           {estado.email.trim()}. São quinze lugares. O lugar confirma-se com o
           pagamento simbólico, numa página da Stripe. Não guardamos dados de
-          cartão.
+          cartão. Os organizadores recebem o teu nome, email e telemóvel por
+          email.
         </p>
         {pagamentoUrl ? (
           <Button asChild className="mt-8 h-12 rounded-full px-6 text-base">
@@ -98,17 +130,14 @@ export function InscriptionForm({ restantes }: { restantes: number }) {
           </Button>
         ) : (
           <p className="mt-6 border border-primary/30 px-4 py-3 text-sm leading-relaxed">
-            O link Stripe ainda não está publicado. A inscrição mantém-se
-            guardada. Quando o pagamento abrir, o link aparece aqui e na
+            O link Stripe ainda não está publicado. A inscrição foi enviada aos
+            organizadores. Quando o pagamento abrir, o link aparece na
             comunidade.
           </p>
         )}
       </div>
     );
   }
-
-  const lugares =
-    restantes === 1 ? "Resta 1 lugar." : `Restam ${restantes} de 15 lugares.`;
 
   return (
     <form className="invitation px-6 py-8 sm:px-10 sm:py-10" onSubmit={submeter} noValidate>
@@ -119,12 +148,20 @@ export function InscriptionForm({ restantes }: { restantes: number }) {
           </p>
           <h3 className="mt-2 font-display text-4xl italic">O teu lugar</h3>
         </div>
-        <p className="text-sm">{lugares}</p>
+        <p className="text-sm">15 lugares.</p>
       </div>
       <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
         Nome, email e telemóvel. Servem para te contactar sobre este encontro e
-        para mais nada. O pagamento é o passo seguinte, na Stripe.
+        para mais nada. A inscrição segue por email para os organizadores. O
+        pagamento é o passo seguinte, na Stripe.
       </p>
+      {emailDestino ? null : (
+        <p className="mt-4 border border-primary/30 px-4 py-3 text-sm leading-relaxed">
+          A caixa de correio dos organizadores ainda não está ligada. Podes
+          preencher o formulário, mas o envio fica nesta página até isso
+          acontecer.
+        </p>
+      )}
 
       <div className="sr-only" aria-hidden="true">
         <label htmlFor="empresa">Empresa</label>
@@ -216,8 +253,8 @@ export function InscriptionForm({ restantes }: { restantes: number }) {
         {aEnviar ? "A enviar…" : "Enviar inscrição"}
       </Button>
       <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-        Não há cookies. Podes retirar o consentimento quando quiseres — a
-        inscrição é apagada e o lugar deixa de estar reservado.
+        Não há cookies. Podes retirar o consentimento quando quiseres: escreve
+        aos organizadores e a inscrição é apagada.
       </p>
       <noscript>
         <p className="mt-4 text-sm">

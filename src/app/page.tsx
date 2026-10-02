@@ -1,7 +1,5 @@
-import { connection } from "next/server";
 import { InscriptionForm } from "@/components/inscription-form";
-import { evento } from "@/lib/evento";
-import { contarInscricoes } from "@/lib/inscricoes";
+import { destinoInscricao, evento, linkPagamento } from "@/lib/evento";
 
 const praticas = [
   "Meditação",
@@ -29,10 +27,9 @@ const acordos = [
   },
 ];
 
-export default async function Page() {
-  await connection();
-  const ocupados = await contarInscricoes();
-  const restantes = Math.max(0, evento.lugares - ocupados);
+export default function Page() {
+  const emailDestino = destinoInscricao();
+  const pagamentoUrl = linkPagamento();
 
   return (
     <main>
@@ -190,8 +187,11 @@ export default async function Page() {
               Depois, se o link já estiver ativo, concluis o pagamento na Stripe.
             </p>
           </div>
-          {restantes > 0 ? (
-            <InscriptionForm restantes={restantes} />
+          {evento.inscricoesAbertas ? (
+            <InscriptionForm
+              pagamentoUrl={pagamentoUrl}
+              emailDestino={emailDestino}
+            />
           ) : (
             <div className="invitation px-6 py-10 sm:px-10">
               <p className="text-xs tracking-[0.22em] text-primary uppercase">
