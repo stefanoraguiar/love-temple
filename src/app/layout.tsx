@@ -55,7 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Saltar para a inscrição
         </a>
         <Header />
-        <div className="flex flex-1 flex-col pb-28">{children}</div>
+        <div className="flex flex-1 flex-col pb-56 sm:pb-36">{children}</div>
         <Footer />
         <RgpdBanner />
       </body>

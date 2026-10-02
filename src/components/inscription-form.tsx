@@ -301,7 +301,7 @@ function Aceite({
           aria-describedby={erro ? erroId : undefined}
           className="mt-0.5 size-5"
         />
-        <Label htmlFor={id} className="items-start text-sm leading-snug font-normal">
+        <Label htmlFor={id} className="inline text-sm leading-snug font-normal">
           {children}
         </Label>
       </div>

@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // O servidor escuta em 0.0.0.0, mas a página abre em 127.0.0.1.
+  // Sem isto, o modo dev bloqueia a hidratação e o formulário não responde.
+  allowedDevOrigins: ["127.0.0.1"],
+  devIndicators: false,
   async headers() {
     return [
       {
