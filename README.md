@@ -16,6 +16,35 @@ Abre [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
 `npm run build` escreve o site em `out/`.
 
+## Construir e publicar no GitHub
+
+O repositório remoto do GitHub chama-se `github` (não `origin`). Em cada alteração:
+
+```bash
+# 1. Confirma que o site constrói
+npm run build
+
+# 2. Vê o que mudou
+git status
+git diff
+
+# 3. Adiciona, faz commit e envia para a main no GitHub
+git add -A
+git commit -m "Descreve a alteração em uma frase."
+git push github main
+```
+
+O push para `main` dispara o workflow em `.github/workflows/pages.yml`, que volta a construir e publica no GitHub Pages. Não é preciso fazer commit da pasta `out/` — o Actions gera-a no servidor.
+
+Se ainda não tiveres o remoto configurado:
+
+```bash
+git remote add github https://github.com/USERNAME/love-temple.git
+git push -u github main
+```
+
+Substitui `USERNAME` pelo teu utilizador ou organização no GitHub.
+
 ## O que configurar antes de abrir inscrições
 
 Em `.env.local`, e nos segredos do repositório GitHub com os mesmos nomes:
