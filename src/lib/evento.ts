@@ -61,7 +61,7 @@ export const evento = {
   fuso: "",
   local: "Porto | Espaço a anunciar",
   lugares: 15,
-  valor: "Valor simbólico",
+  valor: "20€",
   retencao: "12 de novembro de 2026",
   // Fecha a lista à mão, quando os 15 lugares estiverem confirmados.
   inscricoesAbertas: true,

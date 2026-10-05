@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: `%s · ${evento.nome}`,
   },
   description:
-    "Primeiro Love Temple da comunidade. 13 de outubro de 2026, das 19h às 23h. Quinze lugares. Valor simbólico.",
+    "Primeiro Love Temple da comunidade. 13 de outubro de 2026, das 19h às 23h. Quinze lugares. Contribuição de 20€.",
   robots: { index: false, follow: false },
   openGraph: {
     title: evento.nome,

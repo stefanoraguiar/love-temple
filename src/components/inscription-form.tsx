@@ -118,7 +118,7 @@ export function InscriptionForm({
         <p className="mt-4 text-base leading-relaxed">
           Ficou enviada a inscrição de {estado.nome.trim()}, com o email{" "}
           {estado.email.trim()}. São quinze lugares. O lugar confirma-se com o
-          pagamento simbólico, numa página da Stripe. Não guardamos dados de
+          pagamento de 20€, numa página da Stripe. Não guardamos dados de
           cartão. Os organizadores recebem o teu nome, email e telemóvel por
           email.
         </p>

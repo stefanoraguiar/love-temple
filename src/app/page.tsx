@@ -215,7 +215,7 @@ export default function Page() {
             <Linha termo="Lugares" valor="15. Quando fecham, fecham." />
             <Linha
               termo="Valor"
-              valor="Simbólico. O pagamento faz-se num link Stripe, depois da inscrição."
+              valor="20€. O pagamento faz-se num link Stripe, depois da inscrição."
             />
           </dl>
         </div>
