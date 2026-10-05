@@ -1,5 +1,5 @@
 import { InscriptionForm } from "@/components/inscription-form";
-import { destinoInscricao, evento, linkPagamento } from "@/lib/evento";
+import { destinoInscricao, evento } from "@/lib/evento";
 
 const praticas = [
   "Meditação",
@@ -29,7 +29,6 @@ const acordos = [
 
 export default function Page() {
   const emailDestino = destinoInscricao();
-  const pagamentoUrl = linkPagamento();
 
   return (
     <main>
@@ -234,7 +233,6 @@ export default function Page() {
           </div>
           {evento.inscricoesAbertas ? (
             <InscriptionForm
-              pagamentoUrl={pagamentoUrl}
               emailDestino={emailDestino}
             />
           ) : (
