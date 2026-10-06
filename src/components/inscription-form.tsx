@@ -111,28 +111,48 @@ export function InscriptionForm({
   if (enviado) {
     return (
       <div className="invitation px-6 py-10 sm:px-10">
-        <p className="text-xs tracking-[0.22em] text-primary uppercase">
-          Inscrição recebida
+        <p className="text-xs tracking-[0.28em] text-destructive uppercase">
+          Inscrição incompleta
         </p>
-        <h3 className="mt-3 font-display text-4xl italic">Guarda a data.</h3>
-        <p className="mt-4 text-base leading-relaxed">
-          Ficou enviada a inscrição de {estado.nome.trim()}, com o email{" "}
-          {estado.email.trim()}. São quinze lugares. O lugar confirma-se com o
-          pagamento de 20€, numa página da Stripe. Não guardamos dados de
-          cartão. Os organizadores recebem o teu nome, email e telemóvel por
-          email.
+        <h3 className="mt-3 font-display text-4xl leading-tight italic sm:text-5xl">
+          Ainda não está completa.
+        </h3>
+        <p className="mt-5 border-2 border-destructive/50 bg-destructive/10 px-4 py-4 text-base leading-relaxed font-medium sm:text-lg">
+          Recebemos os teus dados — mas o lugar{" "}
+          <span className="underline decoration-2 underline-offset-4">
+            só fica confirmado depois do pagamento de 20€
+          </span>
+          . Sem esse passo, a inscrição não conta.
+        </p>
+        <p className="mt-5 text-base leading-relaxed">
+          Enviámos a inscrição de {estado.nome.trim()} ({estado.email.trim()})
+          aos organizadores. Guarda a data: 13 de outubro, 19h às 23h. O
+          pagamento abre numa página segura da Stripe; não guardamos dados de
+          cartão.
         </p>
         {pagamentoUrl ? (
-          <Button asChild className="mt-8 h-12 rounded-full px-6 text-base">
-            <a href={pagamentoUrl} target="_blank" rel="noopener noreferrer">
-              Continuar para o pagamento
-            </a>
-          </Button>
+          <div className="mt-8 border-2 border-primary/40 bg-primary/10 px-5 py-6 sm:px-6">
+            <p className="text-xs tracking-[0.22em] text-primary uppercase">
+              Passo em falta
+            </p>
+            <p className="mt-2 font-display text-3xl italic">Paga os 20€ agora</p>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Clica no botão. Sem o pagamento, o teu lugar não está reservado.
+            </p>
+            <Button
+              asChild
+              className="mt-5 h-14 w-full rounded-full text-base font-semibold tracking-wide sm:text-lg"
+            >
+              <a href={pagamentoUrl} target="_blank" rel="noopener noreferrer">
+                Completar inscrição · pagar 20€
+              </a>
+            </Button>
+          </div>
         ) : (
-          <p className="mt-6 border border-primary/30 px-4 py-3 text-sm leading-relaxed">
+          <p className="mt-6 border-2 border-destructive/40 px-4 py-3 text-sm leading-relaxed">
             O link Stripe ainda não está publicado. A inscrição foi enviada aos
             organizadores. Quando o pagamento abrir, o link aparece na
-            comunidade.
+            comunidade — até lá, o lugar não está confirmado.
           </p>
         )}
       </div>
