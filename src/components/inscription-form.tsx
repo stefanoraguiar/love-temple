@@ -29,8 +29,10 @@ const inicial: Estado = {
 };
 
 export function InscriptionForm({
+  pagamentoUrl,
   emailDestino,
 }: {
+  pagamentoUrl: string | null;
   emailDestino: string | null;
 }) {
   const [estado, setEstado] = useState<Estado>(inicial);
@@ -110,19 +112,29 @@ export function InscriptionForm({
     return (
       <div className="invitation px-6 py-10 sm:px-10">
         <p className="text-xs tracking-[0.22em] text-primary uppercase">
-          Solicitação recebida
+          Inscrição recebida
         </p>
-        <h3 className="mt-3 font-display text-4xl italic">
-          Tua inscrição ainda não está completa.
-        </h3>
-        <div className="mt-4 space-y-4 text-base leading-relaxed">
-          <p>
-            As inscrições estão sendo processadas conforme chegam, de forma a
-            mantermos um equilíbrio entre corpos femininos e masculinos.
+        <h3 className="mt-3 font-display text-4xl italic">Guarda a data.</h3>
+        <p className="mt-4 text-base leading-relaxed">
+          Ficou enviada a inscrição de {estado.nome.trim()}, com o email{" "}
+          {estado.email.trim()}. São quinze lugares. O lugar confirma-se com o
+          pagamento de 20€, numa página da Stripe. Não guardamos dados de
+          cartão. Os organizadores recebem o teu nome, email e telemóvel por
+          email.
+        </p>
+        {pagamentoUrl ? (
+          <Button asChild className="mt-8 h-12 rounded-full px-6 text-base">
+            <a href={pagamentoUrl} target="_blank" rel="noopener noreferrer">
+              Continuar para o pagamento
+            </a>
+          </Button>
+        ) : (
+          <p className="mt-6 border border-primary/30 px-4 py-3 text-sm leading-relaxed">
+            O link Stripe ainda não está publicado. A inscrição foi enviada aos
+            organizadores. Quando o pagamento abrir, o link aparece na
+            comunidade.
           </p>
-          <p>Aguarde notificações no seu email de contacto.</p>
-          <p>Obrigado.</p>
-        </div>
+        )}
       </div>
     );
   }
