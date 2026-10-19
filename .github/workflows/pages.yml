@@ -36,6 +36,7 @@ jobs:
           INSCRICAO_EMAIL: ${{ secrets.INSCRICAO_EMAIL }}
           STRIPE_PAYMENT_LINK: ${{ secrets.STRIPE_PAYMENT_LINK }}
           CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+          FEEDBACK_ENDPOINT: ${{ secrets.FEEDBACK_ENDPOINT }}
 
       - name: CNAME
         env:

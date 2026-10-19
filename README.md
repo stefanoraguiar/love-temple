@@ -53,11 +53,13 @@ Em `.env.local`, e nos segredos do repositório GitHub com os mesmos nomes:
 INSCRICAO_EMAIL=inscricoes@o-teu-dominio.pt
 STRIPE_PAYMENT_LINK=https://buy.stripe.com/o-teu-link
 CONTACT_EMAIL=privacidade@o-teu-dominio.pt
+FEEDBACK_ENDPOINT=https://script.google.com/macros/s/xxxx/exec
 ```
 
 - `INSCRICAO_EMAIL` é a caixa que recebe cada inscrição. Fica visível no código da página, porque o browser precisa do endereço para enviar o formulário. Na primeira vez, o FormSubmit manda um email de ativação: sem esse clique, as inscrições não chegam.
 - `STRIPE_PAYMENT_LINK` tem de ser `https` e estar num domínio `stripe.com` (os Payment Links vivem em `buy.stripe.com`). Enquanto estiver vazio, a inscrição segue na mesma e a página diz que o pagamento ainda não abriu.
 - `CONTACT_EMAIL` aparece em `/privacidade` para pedidos de acesso, correção ou apagamento. Se ficar vazio, usa-se o `INSCRICAO_EMAIL`.
+- `FEEDBACK_ENDPOINT` é o Web App do Google Apps Script que grava o feedback anónimo de `/eco/` na tua Sheet. Passos e script em [`docs/eco-feedback.md`](docs/eco-feedback.md). Sem este valor, a página `/eco/` abre na mesma, mas o envio fica bloqueado.
 
 O nome legal dos organizadores está em `src/lib/evento.ts`, no campo `responsavel`. Substitui pela entidade real.
 
@@ -68,7 +70,7 @@ Os quinze lugares não se contam sozinhos. Quando a lista fechar, muda `inscrico
 O site tem de estar num repositório GitHub teu. O fluxo está em `.github/workflows/pages.yml` e corre em cada push para `main`.
 
 1. No repositório: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. Em **Settings → Secrets and variables → Actions**, cria os segredos `INSCRICAO_EMAIL`, `STRIPE_PAYMENT_LINK` e `CONTACT_EMAIL`.
+2. Em **Settings → Secrets and variables → Actions**, cria os segredos `INSCRICAO_EMAIL`, `STRIPE_PAYMENT_LINK`, `CONTACT_EMAIL` e `FEEDBACK_ENDPOINT`.
 3. No mesmo sítio, em **Variables**, cria `CUSTOM_DOMAIN` com o domínio que já tens, sem `https://` e sem barra. Exemplos: `lovetemple.pt` ou `www.lovetemple.pt`. O workflow escreve esse valor no ficheiro `CNAME` de cada publicação. Sem esta variável, o Pages fica no endereço `*.github.io`.
 4. Faz push de `main`. O separador **Actions** mostra a publicação. No fim, **Settings → Pages** indica o endereço.
 
@@ -105,6 +107,10 @@ Subdomínio (`www` ou outro), um `CNAME`:
 Se o domínio de raiz e o `www` tiverem estes registos, o GitHub redireciona um para o outro conforme o valor de `CUSTOM_DOMAIN`. Remove outros `A`, `AAAA` ou `CNAME` no mesmo nome: costumam impedir o certificado.
 
 Depois de o DNS propagar, em **Settings → Pages** confirma o domínio e marca **Enforce HTTPS**. O certificado é emitido pelo GitHub e pode demorar até cerca de uma hora. Convém também verificar o domínio na conta GitHub, para mais ninguém o usar num Pages.
+
+## Feedback anónimo (`/eco/`)
+
+Há uma página de feedback não listada no menu: `/eco/`. Partilha o URL só com quem deve responder. As respostas (cinco escalas e um texto livre) vão para a Google Sheet que ligares com o Apps Script descrito em [`docs/eco-feedback.md`](docs/eco-feedback.md).
 
 ## Privacidade
 
