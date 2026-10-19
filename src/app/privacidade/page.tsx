@@ -18,7 +18,8 @@ export default function Privacidade() {
       <h1 className="mt-4 font-display text-6xl italic">Privacidade</h1>
       <p className="mt-6 text-lg leading-relaxed text-foreground/85">
         Esta página explica, em português claro, o que acontece aos dados que
-        deixas no formulário de inscrição do {evento.nome}.
+        deixas no formulário de inscrição do {evento.nome}, e ao feedback
+        anónimo da página privada de eco.
       </p>
 
       <div className="mt-12 space-y-10 text-base leading-relaxed">
@@ -112,6 +113,16 @@ export default function Privacidade() {
             marketing. A Stripe só recebe o que tu próprio introduzires na
             página de pagamento, se decidires avançar. Esse passo é separado
             desta inscrição.
+          </p>
+        </Secao>
+
+        <Secao titulo="Feedback anónimo">
+          <p>
+            Existe uma página privada de feedback, partilhada só por convite.
+            Aí não pedimos nome, email nem telemóvel. Guardamos apenas as
+            respostas às perguntas (escalas e, se quiseres, um texto livre) e a
+            hora do envio, numa folha Google dos organizadores. Não ligamos
+            essas respostas à inscrição.
           </p>
         </Secao>
 
